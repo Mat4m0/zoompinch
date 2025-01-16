@@ -43,7 +43,7 @@ import { useZoom } from '../controllers/zoom';
 import { ref, defineProps, toRef, computed, onMounted, watch, toRefs, onUnmounted, reactive } from 'vue';
 import { radiansToDegrees } from '../controllers/helpers';
 // import { detectTrackpad } from '../controllers/wheel';
-import { WheelEventState, WheelGestures } from '../controllers/wheel-gestures';
+import { WheelEventData, WheelEventState, WheelGestures } from '../controllers/wheel-gestures';
 
 export type Transform = {
   x: number;
@@ -87,8 +87,8 @@ const props = withDefaults(
 );
 const emit = defineEmits<{
   'update:transform': [transform: Transform];
-  dragGestureStart: [];
-  dragGestureEnd: [];
+  dragGestureStart: [event: MouseEvent | TouchEvent | WheelEventData | WheelEvent];
+  dragGestureEnd: [event: MouseEvent | TouchEvent | WheelEventData | WheelEvent];
 }>();
 
 const zoompinchRef = ref<HTMLElement>();
@@ -178,11 +178,11 @@ const wheelGestures = WheelGestures();
 wheelGestures.on('wheel', (wheelEventState) => {
   if (props.wheel) {
     if (wheelEventState.isStart) {
-      emit('dragGestureStart');
+      emit('dragGestureStart', wheelEventState.event);
     }
     handleWheel(wheelEventState.event as any);
     if (wheelEventState.isEnding) {
-      emit('dragGestureEnd');
+      emit('dragGestureEnd', wheelEventState.event);
     }
   }
 });
@@ -202,7 +202,7 @@ onUnmounted(() => {
 // };
 const touchstartProxy = (event: TouchEvent) => {
   if (props.touch) {
-    emit('dragGestureStart');
+    emit('dragGestureStart', event);
     handleTouchstart(event);
   }
 };
@@ -215,13 +215,13 @@ const touchendProxy = (event: TouchEvent) => {
   if (props.touch) {
     handleTouchend(event);
     if (event.composedPath().includes(zoompinchRef.value!)) {
-      emit('dragGestureEnd');
+      emit('dragGestureEnd', event);
     }
   }
 };
 const mousedownProxy = (event: MouseEvent) => {
   if (props.mouse) {
-    emit('dragGestureStart');
+    emit('dragGestureStart', event);
     handleMousedown(event);
   }
 };
@@ -236,7 +236,7 @@ const mouseupProxy = (event: MouseEvent) => {
     console.log('composedPath', event.composedPath().includes(zoompinchRef.value!));
 
     if (event.composedPath().includes(zoompinchRef.value!)) {
-      emit('dragGestureEnd');
+      emit('dragGestureEnd', event);
     }
   }
 };
