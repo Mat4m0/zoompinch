@@ -233,8 +233,6 @@ const mousemoveProxy = (event: MouseEvent) => {
 const mouseupProxy = (event: MouseEvent) => {
   if (props.mouse) {
     handleMouseup(event);
-    console.log('composedPath', event.composedPath().includes(zoompinchRef.value!));
-
     if (event.composedPath().includes(zoompinchRef.value!)) {
       emit('dragGestureEnd', event);
     }
