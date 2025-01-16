@@ -214,6 +214,7 @@ const touchmoveProxy = (event: TouchEvent) => {
 const touchendProxy = (event: TouchEvent) => {
   if (props.touch) {
     handleTouchend(event);
+    console.log('composedPath', event.composedPath());
     emit('dragGestureEnd');
   }
 };
@@ -231,6 +232,8 @@ const mousemoveProxy = (event: MouseEvent) => {
 const mouseupProxy = (event: MouseEvent) => {
   if (props.mouse) {
     handleMouseup(event);
+    console.log('composedPath', event.composedPath());
+
     emit('dragGestureEnd');
   }
 };
