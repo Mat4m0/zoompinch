@@ -214,8 +214,9 @@ const touchmoveProxy = (event: TouchEvent) => {
 const touchendProxy = (event: TouchEvent) => {
   if (props.touch) {
     handleTouchend(event);
-    console.log('composedPath', event.composedPath());
-    emit('dragGestureEnd');
+    if (event.composedPath().includes(zoompinchRef.value!)) {
+      emit('dragGestureEnd');
+    }
   }
 };
 const mousedownProxy = (event: MouseEvent) => {
@@ -232,9 +233,11 @@ const mousemoveProxy = (event: MouseEvent) => {
 const mouseupProxy = (event: MouseEvent) => {
   if (props.mouse) {
     handleMouseup(event);
-    console.log('composedPath', event.composedPath());
+    console.log('composedPath', event.composedPath().includes(zoompinchRef.value!));
 
-    emit('dragGestureEnd');
+    if (event.composedPath().includes(zoompinchRef.value!)) {
+      emit('dragGestureEnd');
+    }
   }
 };
 function isTouchDevice() {
