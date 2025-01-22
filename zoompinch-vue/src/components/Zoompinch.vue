@@ -200,13 +200,16 @@ onUnmounted(() => {
 //     handleWheel(event);
 //   }
 // };
+let touchmoveSinceTouchstart = false;
 const touchstartProxy = (event: TouchEvent) => {
+  touchmoveSinceTouchstart = false;
   if (props.touch) {
     emit('dragGestureStart', event);
     handleTouchstart(event);
   }
 };
 const touchmoveProxy = (event: TouchEvent) => {
+  touchmoveSinceTouchstart = true;
   if (props.touch) {
     handleTouchmove(event);
   }
@@ -214,18 +217,21 @@ const touchmoveProxy = (event: TouchEvent) => {
 const touchendProxy = (event: TouchEvent) => {
   if (props.touch) {
     handleTouchend(event);
-    if (event.composedPath().includes(zoompinchRef.value!)) {
+    if (event.composedPath().includes(zoompinchRef.value!) && touchmoveSinceTouchstart) {
       emit('dragGestureEnd', event);
     }
   }
 };
+let mousemoveSinceMousedown = false;
 const mousedownProxy = (event: MouseEvent) => {
+  mousemoveSinceMousedown = false;
   if (props.mouse) {
     emit('dragGestureStart', event);
     handleMousedown(event);
   }
 };
 const mousemoveProxy = (event: MouseEvent) => {
+  mousemoveSinceMousedown = true;
   if (props.mouse) {
     handleMousemove(event);
   }
@@ -233,7 +239,7 @@ const mousemoveProxy = (event: MouseEvent) => {
 const mouseupProxy = (event: MouseEvent) => {
   if (props.mouse) {
     handleMouseup(event);
-    if (event.composedPath().includes(zoompinchRef.value!)) {
+    if (event.composedPath().includes(zoompinchRef.value!) && mousemoveSinceMousedown) {
       emit('dragGestureEnd', event);
     }
   }
