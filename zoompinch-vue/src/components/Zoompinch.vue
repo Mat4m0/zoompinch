@@ -201,15 +201,24 @@ onUnmounted(() => {
 //   }
 // };
 let touchmoveSinceTouchstart = false;
+let touchstartPoint: { x: number; y: number } | null = null;
+const touchmoveMinDistance = 10;
 const touchstartProxy = (event: TouchEvent) => {
   touchmoveSinceTouchstart = false;
+  touchstartPoint = { x: event.touches[0].clientX, y: event.touches[0].clientY };
   if (props.touch) {
     emit('dragGestureStart', event);
     handleTouchstart(event);
   }
 };
 const touchmoveProxy = (event: TouchEvent) => {
-  touchmoveSinceTouchstart = true;
+  if (
+    Math.sqrt(
+      Math.pow(event.touches[0].clientX - touchstartPoint!.x, 2) + Math.pow(event.touches[0].clientY - touchstartPoint!.y, 2)
+    ) > touchmoveMinDistance
+  ) {
+    touchmoveSinceTouchstart = true;
+  }
   if (props.touch) {
     handleTouchmove(event);
   }
@@ -223,15 +232,23 @@ const touchendProxy = (event: TouchEvent) => {
   }
 };
 let mousemoveSinceMousedown = false;
+let mousestartPoint: { x: number; y: number } | null = null;
+const mousemoveMinDistance = 10;
 const mousedownProxy = (event: MouseEvent) => {
   mousemoveSinceMousedown = false;
+  mousestartPoint = { x: event.clientX, y: event.clientY };
   if (props.mouse) {
     emit('dragGestureStart', event);
     handleMousedown(event);
   }
 };
 const mousemoveProxy = (event: MouseEvent) => {
-  mousemoveSinceMousedown = true;
+  if (
+    Math.sqrt(Math.pow(event.clientX - mousestartPoint!.x, 2) + Math.pow(event.clientY - mousestartPoint!.y, 2)) >
+    mousemoveMinDistance
+  ) {
+    mousemoveSinceMousedown = true;
+  }
   if (props.mouse) {
     handleMousemove(event);
   }
