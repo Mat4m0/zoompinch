@@ -213,8 +213,9 @@ const touchstartProxy = (event: TouchEvent) => {
 };
 const touchmoveProxy = (event: TouchEvent) => {
   if (
+    touchstartPoint &&
     Math.sqrt(
-      Math.pow(event.touches[0].clientX - touchstartPoint!.x, 2) + Math.pow(event.touches[0].clientY - touchstartPoint!.y, 2)
+      Math.pow(event.touches[0].clientX - touchstartPoint.x, 2) + Math.pow(event.touches[0].clientY - touchstartPoint.y, 2)
     ) > touchmoveMinDistance
   ) {
     touchmoveSinceTouchstart = true;
@@ -244,8 +245,9 @@ const mousedownProxy = (event: MouseEvent) => {
 };
 const mousemoveProxy = (event: MouseEvent) => {
   if (
-    Math.sqrt(Math.pow(event.clientX - mousestartPoint!.x, 2) + Math.pow(event.clientY - mousestartPoint!.y, 2)) >
-    mousemoveMinDistance
+    mousestartPoint &&
+    Math.sqrt(Math.pow(event.clientX - mousestartPoint.x, 2) + Math.pow(event.clientY - mousestartPoint.y, 2)) >
+      mousemoveMinDistance
   ) {
     mousemoveSinceMousedown = true;
   }
