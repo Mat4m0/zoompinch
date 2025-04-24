@@ -486,7 +486,7 @@ export class PanCake extends LitElement {
       this.handleGestureend(event);
     });
 
-    this.addEventListener('touchstart', (event) => {
+    window.addEventListener('touchstart', (event) => {
       this.handleTouchstart(event);
     });
     window.addEventListener('touchmove', (event) => {

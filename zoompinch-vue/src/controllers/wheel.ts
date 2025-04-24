@@ -44,6 +44,7 @@ export function useWheel({
 }) {
   function handleWheel(event: WheelEvent) {
     let { deltaX, deltaY, ctrlKey } = event;
+
     const mouseMultiples = [120, 100];
     const mouseFactor = ctrlKey ? 2 : 2;
     if (!detectTrackpad(event)) {

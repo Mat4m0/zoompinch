@@ -91,6 +91,8 @@ const emit = defineEmits<{
   dragGestureEnd: [event: MouseEvent | TouchEvent | WheelEventData | WheelEvent];
 }>();
 
+console.log('!!!!!! ZOOMPINCH !!!!!!!', props);
+
 const zoompinchRef = ref<HTMLElement>();
 const canvasRef = ref<HTMLElement>();
 const matrixRef = ref<HTMLElement>();
@@ -176,19 +178,21 @@ onMounted(() => {
 
 const wheelGestures = WheelGestures();
 wheelGestures.on('wheel', (wheelEventState) => {
-  if (props.wheel) {
-    if (wheelEventState.isStart) {
-      emit('dragGestureStart', wheelEventState.event);
-    }
-    handleWheel(wheelEventState.event as any);
-    if (wheelEventState.isEnding) {
-      emit('dragGestureEnd', wheelEventState.event);
-    }
+  if (wheelEventState.isStart) {
+    emit('dragGestureStart', wheelEventState.event);
+  }
+  handleWheel(wheelEventState.event as any);
+  if (wheelEventState.isEnding) {
+    emit('dragGestureEnd', wheelEventState.event);
   }
 });
-onMounted(() => {
+watch([zoompinchRef, () => props.wheel], () => {
   if (zoompinchRef.value) {
-    wheelGestures.observe(zoompinchRef.value);
+    if (props.wheel) {
+      wheelGestures.observe(zoompinchRef.value);
+    } else {
+      wheelGestures.disconnect();
+    }
   }
 });
 onUnmounted(() => {
